@@ -21,7 +21,7 @@ const useAuthStore = create((set)=>({
             set({user:JSON.parse(user),token,isLoading:false});
         }
         else{
-          set({user:null,token:null,isLoading:true});
+          set({user:null,token:null,isLoading:false});
         }
     }
 }));

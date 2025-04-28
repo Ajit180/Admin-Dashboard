@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { useSignup } from '@/hooks/api/useSignup';
+import { useSignup } from "@/hooks/api/useSignup";
 
 export const SignupContainer = () => {
   const navigate = useNavigate();
 
   // Local form state
   const [signupForm, setSignupForm] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    username: '',
+    email: "",
+    password: "",
+    confirmPassword: "",
+    username: "",
   });
 
   // Your custom hook
-  const { mutate: signupUser, isSuccess } = useSignup();
+  const { isPending, isSuccess, error, signupMutation } = useSignup();
 
   // Handle input changes
   const handleChange = (e) => {
@@ -26,35 +26,44 @@ export const SignupContainer = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  async function handleSubmit(e) {
+    e.preventDefault(e);
     // Optional: You can add validation before sending
     if (signupForm.password !== signupForm.confirmPassword) {
-      alert('Passwords do not match!');
+      alert("Passwords do not match!");
       return;
     }
-    signupUser({
+    await signupMutation({
       email: signupForm.email,
       password: signupForm.password,
       username: signupForm.username,
     });
-  };
+  }
 
   // Redirect on successful signup
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        navigate('/auth/signin');
+        navigate("/auth/signin");
       }, 3000);
     }
   }, [isSuccess, navigate]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="flex items-center justify-center min-h-screen p-4">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
       >
+         {isSuccess && (
+                    <div className='bg-primary/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-primary mb-5'>  
+                        <FaCheck className='size-5' />
+                        <p>
+                            Successfully signed up. You will be redirected to the login page in a few seconds.
+                            <LucideLoader2 className="animate-spin ml-2" />
+                        </p>
+                    </div>
+                )}
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
           Signup
         </h2>
@@ -68,8 +77,11 @@ export const SignupContainer = () => {
             type="email"
             id="email"
             name="email"
+            
+            onChange={(e) =>
+              setSignupForm({ ...signupForm, email: e.target.value })
+            }
             value={signupForm.email}
-            onChange={handleChange}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
@@ -84,8 +96,11 @@ export const SignupContainer = () => {
             type="text"
             id="username"
             name="username"
+           
+            onChange={(e) =>
+              setSignupForm({ ...signupForm, username: e.target.value })
+            }
             value={signupForm.username}
-            onChange={handleChange}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
@@ -100,8 +115,10 @@ export const SignupContainer = () => {
             type="password"
             id="password"
             name="password"
+            onChange={(e) =>
+              setSignupForm({ ...signupForm, password: e.target.value })
+            }
             value={signupForm.password}
-            onChange={handleChange}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
@@ -116,10 +133,13 @@ export const SignupContainer = () => {
             type="password"
             id="confirmPassword"
             name="confirmPassword"
+            onChange={(e) =>
+              setSignupForm({ ...signupForm, confirmPassword: e.target.value })
+            }
             value={signupForm.confirmPassword}
-            onChange={handleChange}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
+            disabled={isPending}
           />
         </div>
 
@@ -130,7 +150,18 @@ export const SignupContainer = () => {
         >
           Signup
         </button>
+
+        <p className="text-s text-muted-foreground mt-4">
+        Already have an account ?{" "}
+        <span
+          className="text-sky-600 hover:underline cursor-pointer"
+          onClick={() => navigate("/auth/signin")}
+        >
+          Sign In
+        </span>
+      </p>
       </form>
+     
     </div>
   );
 };

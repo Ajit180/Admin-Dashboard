@@ -2,9 +2,10 @@ import { useMutation } from "@tanstack/react-query"
 
 import useAuthStore from "../Store/useAuth"
 import { siginRequest } from "@/api/auth"
-const {setAuth} =useAuthStore();
+
 
 export const useSignin = ()=>{
+    const {setAuth} =useAuthStore();
     const {isPending,isSuccess,error,mutateAsync:siginMutation}=useMutation({
         mutationFn:siginRequest,
         onSuccess:(response)=>{
