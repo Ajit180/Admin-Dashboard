@@ -5,6 +5,7 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './components/Component/ProtectedRoute'
 import Product from './components/Component/product'
+import AdminLayout from './components/Layout/AdminLayout'
 
 
 const AppRoutes = () => {
@@ -13,6 +14,7 @@ const AppRoutes = () => {
         <Route path='auth/signup' element={<Auth><SignupContainer/></Auth>}/>
         <Route path='auth/signin' element={<Auth><SigninContainer/></Auth>}/>
         <Route path='auth/product' element ={<ProtectedRoute><Product/></ProtectedRoute>}/>
+        <Route path='admin' element={<ProtectedRoute><AdminLayout/></ProtectedRoute>} />
        
     </Routes>
   )
