@@ -12,7 +12,7 @@ export const useSignin = ()=>{
          console.log('Sigin Successfully',response);
          //save user and token in localstorage
          localStorage.setItem('token',response.token);
-         localStorage.setItem('user',JSON.stringify(response.user));
+         localStorage.setItem('user',JSON.stringify(response.data));
 
          //update the zustand store
          setAuth({
