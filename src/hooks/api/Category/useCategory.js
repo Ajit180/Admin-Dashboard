@@ -19,7 +19,7 @@ export const useCreateCategory = ()=>{
 
     return{
         isPending,
-        isPending,
+        isSuccess,
         error,
         CreateCategorymutation
     }

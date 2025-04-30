@@ -17,10 +17,10 @@ const Categories = () => {
       slug:categoryForm.slug
     })
 
-    SetCategoryForm({ name: "", slug: "" });
+    // SetCategoryForm({ name: "", slug: "" });
 
-    // show success alert
-    alert("Category created successfully ✅");
+    // // show success alert
+    // alert("Category created successfully ✅");
    }
 
    useEffect(() => {
