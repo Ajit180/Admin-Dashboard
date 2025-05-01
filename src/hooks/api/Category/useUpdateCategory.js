@@ -1,7 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { UpdateCategoryRequest } from "@/api/category";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useUpdateCategory = () => {
+
+  const queryClient = useQueryClient();
   const {
     mutateAsync: UpdateCategoryMutation,
     isPending,
@@ -15,6 +18,7 @@ export const useUpdateCategory = () => {
     onSuccess: (response) => {
         alert('Updated Successfully');
         console.log("Update successful:", response);
+        queryClient.invalidateQueries({queryKey:["getAllCategory"]})
       },
       onError: (error) => {
 

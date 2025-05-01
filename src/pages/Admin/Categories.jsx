@@ -3,6 +3,7 @@ import { useGetAllCategory } from "@/hooks/api/Category/useGetAllCategory";
 import { useCreateCategory } from "@/hooks/api/Category/useCategory";
 import { useUpdateCategory } from "@/hooks/api/Category/useUpdateCategory";
 import { useDeleteCategory } from "@/hooks/api/Category/useDeleteCategory";
+import { useQueryClient } from "@tanstack/react-query";
 import useAuthStore from "@/hooks/Store/useAuth";
 
 const Categories = () => {
@@ -10,6 +11,7 @@ const Categories = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const {token}=useAuthStore();
+  const queryClient = useQueryClient();
 
   const { data: categories = [], isLoading: isFetching } = useGetAllCategory(token);
   const { CreateCategorymutation, isSuccess: isCreated } = useCreateCategory();
@@ -41,6 +43,7 @@ const Categories = () => {
       alert(`Category ${isCreated ? "created" : "updated"} successfully ✅`);
       setCategoryForm({ name: '', slug: '' });
       setIsEditMode(false);
+      queryClient.invalidateQueries({ queryKey: ["getAllCategory"] });
     }
   }, [isCreated, isUpdated]);
 

@@ -12,7 +12,7 @@ export const useGetAllCategory = (token) => {
     error,
     refetch: fetchCategory, // correctly named
   } = useQuery({
-    queryKey: ["get-category"],
+    queryKey: ["getAllCategory"],
     queryFn: () => GetCategoryAllRequest({ token }),
     onError: (err) => {
       console.error("GetCategory error:", err);
