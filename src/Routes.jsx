@@ -6,9 +6,9 @@ import { Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './components/Component/ProtectedRoute'
 import AdminLayout from './components/Layout/AdminLayout'
 import Dashboard from './pages/Admin/Dashboard'
-import Products from './pages/Admin/Products'
 import Orders from './pages/Admin/Orders'
 import Categories from './pages/Admin/Categories'
+import ProductContainer from './pages/Admin/Product/ProductContainer'
 
 
 const AppRoutes = () => {
@@ -20,7 +20,7 @@ const AppRoutes = () => {
 
       <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
         <Route path='admin/dashboard' element={<Dashboard />} />
-        <Route path='admin/products' element={<Products />} />
+        <Route path='admin/products' element={<ProductContainer/>} />
         <Route path='admin/orders' element={<Orders/>}/>
         <Route path='admin/category' element={<Categories/>}/>
       </Route>

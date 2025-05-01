@@ -1,32 +1,45 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
+  const navLinkClass = ({ isActive }) =>
+    isActive
+      ? "block px-4 py-2 rounded-lg bg-gray-700 text-white font-semibold transition-all"
+      : "block px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-all";
+
   return (
     <div className="flex min-h-screen">
-      {/* sidebar */}
-      <aside className="w-64 bg-gray-800 text-white p-4">
-        <h2 className="text-lg font-bold mb-4">Admin Panel</h2>
+      {/* Sidebar */}
+      <aside className="w-64 bg-gray-900 text-white p-6 shadow-lg">
+        <h2 className="text-2xl font-bold mb-6 tracking-wide">Admin Panel</h2>
         <nav>
-          <ul className="space-y-2">
-          <li>
-              <Link to="admin/category">Category</Link>
+          <ul className="space-y-3">
+            <li>
+              <NavLink to="admin/category" className={navLinkClass}>
+                📁 Category
+              </NavLink>
             </li>
             <li>
-              <Link to="admin/dashboard">Dashboard</Link>
+              <NavLink to="admin/dashboard" className={navLinkClass}>
+                📊 Dashboard
+              </NavLink>
             </li>
             <li>
-              <Link to="admin/products">Products</Link>
+              <NavLink to="admin/products" className={navLinkClass}>
+                📦 Products
+              </NavLink>
             </li>
             <li>
-              <Link to="admin/orders">Orders</Link>
+              <NavLink to="admin/orders" className={navLinkClass}>
+                🧾 Orders
+              </NavLink>
             </li>
           </ul>
         </nav>
       </aside>
 
-      {/* main content  */}
-      <main className="flex-1 bg-gray-100 p-6">
+      {/* Main content */}
+      <main className="flex-1 bg-gray-100 p-8">
         <Outlet />
       </main>
     </div>
