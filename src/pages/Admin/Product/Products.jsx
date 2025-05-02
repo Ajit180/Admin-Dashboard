@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useCreateProduct } from "@/hooks/api/product/useProductCreate";
+import { useQueryClient } from "@tanstack/react-query";
+import { getPreginedUrl, uploadImageToAWSpresignedUrl } from "@/api/Presigned";
 import {
   Dialog,
   DialogTrigger,
@@ -12,32 +14,62 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import useAuthStore from "@/hooks/Store/useAuth";
 
 const CreateProduct = () => {
   const [productForm, setProductForm] = useState({
     name: "",
     description: "",
     price: "",
-    images: "",
+    images: [], // array of uploaded image URLs
     categoryId: "",
     stock: "",
     brand: "",
     rating: "",
   });
 
-  const { isPending, isSuccess, error, createProductmutation } =
-    useCreateProduct();
+  const { token } = useAuthStore();
+  const [file, setFile] = useState(null);
+  const [isImageUploaded, setIsImageUploaded] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
-  async function handleSubmit(e) {
+  const { isPending, isSuccess, error, createProductmutation } = useCreateProduct();
+
+  // 🟡 Upload file on button click
+  const handleUploadImage = async () => {
+    if (!file) return alert("Please select a file");
+    setUploading(true);
+
+    try {
+      const presignedUrl = await getPreginedUrl({ token });
+
+      console.log("Presigned URL Response:", presignedUrl);
+
+      await uploadImageToAWSpresignedUrl({ url: presignedUrl.data, file });
+      console.log("File upload success");
+
+      const uploadedUrl = presignedUrl.data.split("?")[0];
+
+      console.log(uploadedUrl);
+      setProductForm((prev) => ({
+        ...prev,
+        images: [uploadedUrl],
+      }));
+      setIsImageUploaded(true);
+    } catch (err) {
+      alert("Image upload failed");
+      console.error(err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // 🟢 Submit product
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const payload = {
-      ...productForm,
-      images: productForm.images.split(",").map((url) => url.trim()),
-    };
-
-    await createProductmutation(payload);
-  }
+    if (!isImageUploaded) return alert("Upload image before submitting");
+    await createProductmutation(productForm);
+  };
 
   useEffect(() => {
     if (isSuccess) {
@@ -46,12 +78,14 @@ const CreateProduct = () => {
         name: "",
         description: "",
         price: "",
-        images: "",
+        images: [],
         categoryId: "",
         stock: "",
         brand: "",
         rating: "",
       });
+      setIsImageUploaded(false);
+      setFile(null);
     }
   }, [isSuccess]);
 
@@ -73,7 +107,6 @@ const CreateProduct = () => {
             { label: "Name", name: "name", type: "text" },
             { label: "Description", name: "description", type: "text" },
             { label: "Price", name: "price", type: "number" },
-            { label: "Images (comma separated URLs)", name: "images", type: "text" },
             { label: "Category ID", name: "categoryId", type: "text" },
             { label: "Stock", name: "stock", type: "number" },
             { label: "Brand", name: "brand", type: "text" },
@@ -93,11 +126,40 @@ const CreateProduct = () => {
             </div>
           ))}
 
+          {/* 🟦 File Upload */}
+          <div>
+            <Label htmlFor="image">Image Upload</Label>
+            <Input
+              id="image"
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                setFile(e.target.files[0]);
+                setIsImageUploaded(false);
+              }}
+            />
+            <Button
+              type="button"
+              onClick={handleUploadImage}
+              className="mt-2"
+              disabled={!file || uploading}
+            >
+              {uploading ? "Uploading..." : "Upload Image"}
+            </Button>
+
+            {isImageUploaded && (
+              <p className="text-green-600 text-sm mt-2">✅ Image Uploaded</p>
+            )}
+          </div>
+
+          {/* 🟢 Submit */}
           <DialogFooter className="flex justify-end gap-2">
             <DialogClose asChild>
-              <Button variant="outline" type="button">Cancel</Button>
+              <Button variant="outline" type="button">
+                Cancel
+              </Button>
             </DialogClose>
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending || !isImageUploaded}>
               {isPending ? "Creating..." : "Create Product"}
             </Button>
           </DialogFooter>

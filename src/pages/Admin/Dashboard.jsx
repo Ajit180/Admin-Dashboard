@@ -1,9 +1,10 @@
 import React from 'react'
+import ImageUpload from '../fileUpload/FileUpload'
 
 const Dashboard = () => {
   return (
     <div>
-      This is the Dashboard
+      <ImageUpload/>
     </div>
   )
 }
