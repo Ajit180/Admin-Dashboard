@@ -1,7 +1,7 @@
 import { Route } from "react-router-dom";
 import AdminLayout from "./components/Layout/AdminLayout";
 import Dashboard from "./pages/Admin/Dashboard";
-import Products from "./pages/Admin/Product/Products";
+import Products from "./pages/Admin/Product/CreateProduct";
 import Orders from "./pages/Admin/Orders";
 
 export const adminRoutes = (

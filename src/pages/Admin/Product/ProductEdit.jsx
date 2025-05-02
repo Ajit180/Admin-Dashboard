@@ -7,7 +7,7 @@ import { useDeleteProduct } from "@/hooks/api/order/useDeleteOrder";
 import { useQueryClient } from "@tanstack/react-query";
 import useAuthStore from "@/hooks/Store/useAuth";
 
-const ProductDetails = () => {
+const ProductEdit = () => {
   const [productForm, setProductForm] = useState({
     name: "",
     description: "",
@@ -23,19 +23,22 @@ const ProductDetails = () => {
   const queryClient = useQueryClient();
 
   const { data: products = [], isLoading: isFetching } = useGetAllProduct(token);
-  const { UpdateProductMutation, isSuccess: isUpdated } = useUpdateProduct();
-  const { DeleteProductMutation, isSuccess: isDeleted } = useDeleteProduct();
+  const { data:updateddata,UpdateProductMutation, isSuccess: isUpdated } = useUpdateProduct();
+  const { data:deletedata,DeleteProductMutation, isSuccess: isDeleted } = useDeleteProduct();
 
-  console.log(products);
+  console.log('Products in the ProductEdit after updated',updateddata);
+  console.log('Products in the ProductEdit after deleted',deletedata);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isEditMode) {
       await UpdateProductMutation({
-        productId: selectedProductId,
-        updatedData: productForm,
-        token,
+        id: selectedProductId,
+         name:productForm.name,
+         description:productForm.description,
+         price:productForm.price,
+        token:token,
       });
     }
   };
@@ -75,9 +78,9 @@ const ProductDetails = () => {
     setIsEditMode(true);
   };
 
-  const handleDelete = async (productId) => {
+  const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this product?")) {
-      await DeleteProductMutation({ productId, token });
+      await DeleteProductMutation({ id, token }); // the same name should be passed in for the deleteproduct
     }
   };
 
@@ -161,7 +164,7 @@ const ProductDetails = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(prod._id)}
+                    onClick={() => handleDelete(prod._id)} 
                     className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
                   >
                     Delete
@@ -176,4 +179,4 @@ const ProductDetails = () => {
   );
 };
 
-export default ProductDetails;
+export default ProductEdit;

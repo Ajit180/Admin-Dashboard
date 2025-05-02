@@ -12,6 +12,7 @@ export const useDeleteProduct = () => {
     isSuccess,
     isError,
     error,
+    data,
   } = useMutation({
     mutationFn: ({ id, token }) =>
       DeleteProductRequest({ id, token }),
@@ -25,6 +26,7 @@ export const useDeleteProduct = () => {
   });
 
   return {
+    data,
     DeleteProductMutation,
     isPending,
     isSuccess,

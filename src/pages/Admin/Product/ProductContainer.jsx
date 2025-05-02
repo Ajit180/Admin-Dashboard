@@ -1,12 +1,12 @@
 import React from 'react'
-import CreateProduct from './Products'
-import ProductDetails from './ProductFetch'
+import CreateProduct from './CreateProduct'
+import ProductEdit from './ProductEdit'
 
 const ProductContainer = () => {
   return (
     <div>
      <CreateProduct/>
-     <ProductDetails/>
+     <ProductEdit/>
     </div>
   )
 }

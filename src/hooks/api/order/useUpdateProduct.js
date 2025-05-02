@@ -12,6 +12,7 @@ export const useUpdateProduct = () => {
     isSuccess,
     isError,
     error,
+    data
   } = useMutation({
     mutationFn: ({ id, name,description,price, token }) =>
       UpdateProductRequest({ id, name,description,price, token }),
@@ -26,6 +27,7 @@ export const useUpdateProduct = () => {
   });
 
   return {
+    data,
     UpdateProductMutation,
     isPending,
     isSuccess,
