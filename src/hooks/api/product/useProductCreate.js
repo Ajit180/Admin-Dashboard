@@ -16,6 +16,7 @@ export const useCreateProduct = () => {
       CreateProductRequest({ ...data, token }),// token included here
     onSuccess: (response) => {
       console.log("✅ Product created successfully:", response);
+      console.log('product data',response.data);
     },
     onError: (error) => {
       console.log("❌ Error creating product:", error);

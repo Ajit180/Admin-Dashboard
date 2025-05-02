@@ -29,32 +29,44 @@ const CreateProduct = () => {
   });
 
   const { token } = useAuthStore();
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]); // store multiple files
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const { isPending, isSuccess, error, createProductmutation } = useCreateProduct();
+  const {
+    data: createdata,
+    isPending,
+    isSuccess,
+    error,
+    createProductmutation,
+  } = useCreateProduct();
 
-  // 🟡 Upload file on button click
-  const handleUploadImage = async () => {
-    if (!file) return alert("Please select a file");
+  console.log("createdata", createdata);
+  // 🟡 Upload multiple images
+  const handleUploadImages = async () => {
+    if (!files.length) return alert("Please select images");
+    if (files.length > 4) return alert("You can only upload up to 4 images");
+
     setUploading(true);
+    const uploadedUrls = [];
 
     try {
-      const presignedUrl = await getPreginedUrl({ token });
+      for (let file of files) {
+        const presignedUrl = await getPreginedUrl({ token });
+        await uploadImageToAWSpresignedUrl({ url: presignedUrl.data, file });
+        const uploadedUrl = presignedUrl.data.split("?")[0];
+        uploadedUrls.push(uploadedUrl);
+      }
 
-      console.log("Presigned URL Response:", presignedUrl);
+      console.log("Uploaded Urls", uploadedUrls);
 
-      await uploadImageToAWSpresignedUrl({ url: presignedUrl.data, file });
-      console.log("File upload success");
-
-      const uploadedUrl = presignedUrl.data.split("?")[0];
-
-      console.log(uploadedUrl);
       setProductForm((prev) => ({
         ...prev,
-        images: [uploadedUrl],
+        images: uploadedUrls,
       }));
+
+      console.log("images", productForm.images);
+
       setIsImageUploaded(true);
     } catch (err) {
       alert("Image upload failed");
@@ -84,10 +96,13 @@ const CreateProduct = () => {
         brand: "",
         rating: "",
       });
+
       setIsImageUploaded(false);
-      setFile(null);
+      setFiles([]);
     }
   }, [isSuccess]);
+
+  console.log("productform", productForm);
 
   return (
     <Dialog>
@@ -128,28 +143,51 @@ const CreateProduct = () => {
 
           {/* 🟦 File Upload */}
           <div>
-            <Label htmlFor="image">Image Upload</Label>
+            <Label htmlFor="image">Upload up to 4 images</Label>
             <Input
               id="image"
               type="file"
               accept="image/*"
+              multiple
               onChange={(e) => {
-                setFile(e.target.files[0]);
+                const selected = Array.from(e.target.files);
+                if (selected.length > 4) {
+                  alert("You can upload up to 4 images only");
+                  return;
+                }
+                setFiles(selected);
                 setIsImageUploaded(false);
               }}
             />
             <Button
               type="button"
-              onClick={handleUploadImage}
+              onClick={handleUploadImages}
               className="mt-2"
-              disabled={!file || uploading}
+              disabled={!files.length || uploading}
             >
-              {uploading ? "Uploading..." : "Upload Image"}
+              {uploading ? "Uploading..." : "Upload Images"}
             </Button>
-
             {isImageUploaded && (
-              <p className="text-green-600 text-sm mt-2">✅ Image Uploaded</p>
+              <div className="flex gap-2 mt-2">
+                {/* {productForm.images.map((url, index) => (
+                  <img
+                    key={index}
+                    src={url}
+                    alt={`Uploaded ${index}`}
+                    className="w-20 h-20 object-cover rounded px-1"
+                  />
+                ))} */}
+                <p className="text-green-600 text-sm mt-2">
+                ✅ All images uploaded
+              </p>
+              </div>
             )}
+
+            {/* {isImageUploaded && (
+              <p className="text-green-600 text-sm mt-2">
+                ✅ All images uploaded
+              </p>
+            )} */}
           </div>
 
           {/* 🟢 Submit */}
