@@ -32,6 +32,8 @@ const CreateProduct = () => {
   const [files, setFiles] = useState([]); // store multiple files
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [open, setOpen] = useState(false);
+
 
   const {
     data: createdata,
@@ -98,6 +100,7 @@ const CreateProduct = () => {
       });
 
       setIsImageUploaded(false);
+      setOpen(false);
       setFiles([]);
     }
   }, [isSuccess]);
@@ -105,14 +108,16 @@ const CreateProduct = () => {
   console.log("productform", productForm);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button className="bg-blue-600 hover:bg-blue-700 text-white"
+        onClick={()=>setOpen(true)}
+        >
           + Add Product
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create New Product</DialogTitle>
         </DialogHeader>
