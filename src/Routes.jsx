@@ -1,4 +1,4 @@
-import Auth from '@/pages/auth/auth'
+import Auth from './pages/auth/Auth'
 import { SigninContainer } from '@/pages/auth/signin'
 import { SignupContainer } from './pages/auth/Signup'
 import React from 'react'
