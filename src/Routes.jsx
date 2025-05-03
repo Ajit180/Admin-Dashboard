@@ -9,11 +9,13 @@ import Dashboard from './pages/Admin/Dashboard'
 import Orders from './pages/Admin/Orders'
 import Categories from './pages/Admin/Categories'
 import ProductContainer from './pages/Admin/Product/ProductContainer'
+import Home from './pages/Home/Home'
 
 
 const AppRoutes = () => {
   return (
     <Routes>
+       <Route path='/' element={<Home/>}/>
         <Route path='auth/signup' element={<Auth><SignupContainer/></Auth>}/>
         <Route path='auth/signin' element={<Auth><SigninContainer/></Auth>}/>
         {/* <Route path='admin' element={<ProtectedRoute><AdminLayout/></ProtectedRoute>} /> */}
