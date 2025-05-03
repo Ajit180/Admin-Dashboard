@@ -1,5 +1,5 @@
 import Auth from './pages/auth/Auth'
-import { SigninContainer } from '@/pages/auth/signin'
+import { SigninContainer } from './pages/auth/Signin'
 import { SignupContainer } from './pages/auth/Signup'
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
